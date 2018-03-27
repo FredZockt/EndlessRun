@@ -1,0 +1,10 @@
+{
+  "name": "EndlessRun",
+  "version": "0.0.1",
+  "devDependencies": {
+    "phaser-ce": "^2.10.3"
+  },
+  "dependencies": {
+    "jquery": "^3.3.1"
+  }
+}

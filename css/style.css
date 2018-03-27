@@ -1,0 +1,24 @@
+#stage {
+    position: relative;
+}
+.action-buttons {
+    position: absolute;
+}
+.action-buttons .btn {
+    display: block;
+    margin: 15px 0 0 15px;
+}
+.action-buttons span.price {
+    display: inline;
+}
+
+.option-buttons {
+    position: absolute;
+    right: 0;
+}
+.option-buttons .btn {
+    margin: 15px 15px 0 0;
+}
+[data-option=mute] {
+    width: 40px;
+}
