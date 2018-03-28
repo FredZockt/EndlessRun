@@ -90,16 +90,31 @@ function create() {
 
     game.sound.setDecodedCallback(sounds, start, this);
 
+    speedButton = game.add.button( ( ( ( ( 193 / 2 ) * 0 ) + 15) ), 15, 'button', buySpeed, this, 2, 1, 0);
+    speedButtonLabel = game.add.text( ( ( ( ( 193 / 2 ) * 0 ) + 15) ), 45, 'Speed',  {font:"20px Arial", fill: 'white'});
+    speedButton.scale.set(.5);
+    speedButton.inputEnabled = true;
 
-    changeCharacterButton = game.add.button(game.world.centerX, 15, 'button', changeChar, this, 2, 1, 0);
+    multiButton = game.add.button( ( ( ( ( 193 / 2 ) * 1 ) + 15) ), 15, 'button', buyMultiplier, this, 2, 1, 0);
+    multiButtonLabel = game.add.text( ( ( ( ( 193 / 2 ) * 1 ) + 15) ), 45, 'Multi',  {font:"20px Arial", fill: 'white'});
+    multiButton.scale.set(.5);
+    multiButton.inputEnabled = true;
+
+    changeCharacterButton = game.add.button( ( game.world.width - ( ( ( 193 / 2 ) * 3 ) + 15) ), 15, 'button', changeChar, this, 2, 1, 0);
+    changeCharacterButtonLabel = game.add.text( ( game.world.width - ( ( ( 193 / 2 ) * 3 ) + 15) ), 45, 'Change',  {font:"20px Arial", fill: 'white'});
     changeCharacterButton.scale.set(.5);
     changeCharacterButton.inputEnabled = true;
-    //console.log(game.world.width);
-}
 
-function changeChar(sprite,pointer){
-    player.character = player.character === 'mummy' ? 'scott' : 'mummy';
-    updateCharacter();
+    muteButton = game.add.button( ( game.world.width - ( ( ( 193 / 2 ) * 2 ) + 15) ), 15, 'button', muteMusic, this, 2, 1, 0);
+    muteButtonLabel = game.add.text( ( game.world.width - ( ( ( 193 / 2 ) * 2 ) + 15) ), 45, 'Mute',  {font:"20px Arial", fill: 'white'});
+    muteButton.scale.set(.5);
+    muteButton.inputEnabled = true;
+
+    resetButton = game.add.button( ( game.world.width - ( ( ( 193 / 2 ) * 1 ) + 15) ), 15, 'button', resetGame, this, 2, 1, 0);
+    resetButtonLabel = game.add.text( ( game.world.width - ( ( ( 193 / 2 ) * 1 ) + 15) ), 45, 'Reset',  {font:"20px Arial", fill: 'white'});
+    resetButton.scale.set(.5);
+    resetButton.inputEnabled = true;
+
 }
 
 function start() {
@@ -131,22 +146,46 @@ function updateData(data) {
     localStorage.setItem('player', JSON.stringify(data));
 }
 
-function updateValues(value, cost) {
-    if(cost <= player.cash) {
-        switch(value) {
-            case 'speed':
-                player.runSpeed++;
-                speedText.text = 'Your Speed: ' + ( player.runSpeed - 9);
-                anim.speed = player.runSpeed;
-                player.cash -= cost;
-                break;
-            case 'money':
-                player.cashMultiplier++;
-                multiplierText.text = 'Cash per Step: ' + ( setup.cash * player.cashMultiplier );
-                player.cash -= cost;
-                break;
-        }
+function buySpeed() {
+    if((player.runSpeed*1.10) <= player.cash) {
+        player.runSpeed++;
+        speedText.text = 'Your Speed: ' + (player.runSpeed - 9) + ' Cost: ' + Math.floor(player.runSpeed*1.10);
+        anim.speed = player.runSpeed;
+        player.cash -= Math.floor(player.runSpeed*1.10);
+        updateData(player);
     }
+}
+
+function buyMultiplier() {
+    if((player.cashMultiplier*10.10) <= player.cash) {
+        player.cashMultiplier++;
+        multiplierText.text = 'Cash per Step: ' + (setup.cash * player.cashMultiplier) + ' Cost: ' + Math.floor(player.cashMultiplier*10.10);
+        player.cash -= Math.floor(player.cashMultiplier*10.10);
+        updateData(player);
+    }
+}
+
+function changeChar(sprite,pointer){
+    player.character = player.character === 'mummy' ? 'scott' : 'mummy';
+    updateCharacter();
+}
+
+function resetGame() {
+    player.runSpeed = 10;
+    player.cash = 0;
+    player.cashMultiplier = 1;
+    player.character = 'scott';
+    updateCharacter();
+    updateData(player);
+}
+
+function muteMusic() {
+    if(!music.mute) {
+        music.mute = true;
+    } else {
+        music.mute = false;
+    }
+    player.options.mute = music.mute;
     updateData(player);
 }
 
@@ -169,66 +208,3 @@ function updateCharacter() {
     music.mute = player.options.mute;
     start();
 }
-
-function updatePrices(b) {
-    if(b.attr('data-action') === 'speed') {
-        b.attr('data-cost', Math.floor(b.attr('data-cost')*1.10));
-        b.find('.price').text(b.attr('data-cost'));
-    }
-    if(b.attr('data-action') === 'money') {
-        b.attr('data-cost', Math.floor(b.attr('data-cost')*10.0));
-        b.find('.price').text(b.attr('data-cost'));
-    }
-}
-
-function updateOptions(b) {
-    var value = b.attr('data-option');
-    switch(value) {
-        case 'mute':
-            if(!music.mute) {
-                music.mute = true;
-                b.find('span').removeClass('oi-volume-high').addClass('oi-volume-off');
-            } else {
-                music.mute = false;
-                b.find('span').removeClass('oi-volume-off').addClass('oi-volume-high');
-            }
-            player.options.mute = music.mute;
-            updateData(player);
-            break;
-        case 'menu':
-            //player.character = player.character === 'mummy' ? 'scott' : 'mummy';
-            //updateCharacter();
-            break;
-        case 'reset':
-            player.runSpeed = 10;
-            player.cash = 0;
-            player.cashMultiplier = 1;
-            player.character = 'scott';
-            updateCharacter();
-            updateData(player);
-            break;
-    }
-}
-
-$('.action-buttons .btn').on('click', function() {
-    if(!$(this).hasClass('disabled')) {
-        updateValues($(this).attr('data-action'), parseInt($(this).attr('data-cost')));
-        updatePrices($(this));
-    } else {
-        console.log('disabled');
-    }
-});
-
-$('.option-buttons .btn').on('click', function () {
-    updateOptions($(this));
-});
-
-setInterval(function() {
-    $('.action-buttons .btn').each(function() {
-        if(parseInt($(this).attr('data-cost')) <= player.cash) {
-            $(this).removeClass('disabled');
-        } else if(!$(this).hasClass('disabled')) {
-            $(this).addClass('disabled');
-        }
-    });
-}, 100);
