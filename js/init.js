@@ -72,9 +72,9 @@ function create() {
     character.smoothed = false;
     anim = character.animations.add('run');
 
-    speedText = game.add.text(15, 160, 'Your Speed: ' + ( player.runSpeed - 9), { fill: 'white' });
-    multiplierText = game.add.text(15, 200, 'Cash per Step: ' + ( setup.cash * player.cashMultiplier), { fill: 'white' });
-    cashText = game.add.text(15, 120, 'Your cash: ' + player.cash, { fill: 'white' });
+    speedText = game.add.text(15, 70, 'Your Speed: ' + ( player.runSpeed - 9), { fill: 'white' });
+    multiplierText = game.add.text(15, 100, 'Cash per Step: ' + ( setup.cash * player.cashMultiplier), { fill: 'white' });
+    cashText = game.add.text(15, 130, 'Your cash: ' + player.cash, { fill: 'white' });
 
     anim.onStart.add(animationStarted, this);
     anim.onLoop.add(animationLooped, this);
